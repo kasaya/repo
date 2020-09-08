@@ -6,15 +6,22 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+  const [all, setAll] = useState(0)
+  const [score, setScore] = useState(0)
 
   const goodClick = () =>{
      setGood(good + 1)
+     setAll(all+1)
+     setScore(score+1)
   }
   const neutralClick = () =>{
     setNeutral(neutral + 1)
+    setAll(all+1)
   }
   const badClick = () =>{
     setBad(bad + 1)
+    setAll(all+1)
+    setScore(score-1)
   }
 
   const handleclick= (prop)=>{
@@ -37,6 +44,45 @@ const App = () => {
       </div>
     )
   }
+  const All = () => {
+    return (
+      <div>
+        all {all}
+      </div>
+    )
+  }
+  const Average = () => {
+    if(all != 0){
+      return (
+        <div>
+          average {score / all}
+        </div>
+      )
+    }
+
+    return (
+      <div>
+        average 0
+      </div>
+    )
+    
+  }
+  const Positive = () => {
+    if(all != 0){
+      return (
+        <div>
+          positive {(good/all) * 100}%
+        </div>
+      )
+    }
+
+    return (
+      <div>
+        positive 0%
+      </div>
+    )
+    
+  }
   
 
   return (
@@ -47,6 +93,9 @@ const App = () => {
      <Button text="bad" funciton={badClick}></Button>
      <h1>statistics</h1> 
      <Display></Display>
+     <All></All>
+     <Average></Average>
+     <Positive></Positive>
     </div>
   )
 }
