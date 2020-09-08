@@ -1,6 +1,50 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
+const Button = (prop) =>{
+  return (
+  <button onClick={prop.funciton}>{prop.text}</button>
+  )
+}
+
+const Statistic =(prop)=>{
+  return(
+    <>
+    <tr>
+      <td>{prop.text}</td> 
+      <td>{prop.value}</td>
+    </tr>
+    </>
+  )
+}
+
+const Statistics = (props) => {
+  if(props.feedback.all > 0){
+
+    return (
+      <table>
+        <tbody>
+      <Statistic text="good" value={props.feedback.good}></Statistic>
+      <Statistic text="neutral" value={props.feedback.neutral}></Statistic>
+      <Statistic text="bad" value={props.feedback.bad}></Statistic>
+      <Statistic text="all" value={props.feedback.all}></Statistic>
+      <Statistic text="average" value={props.feedback.score / props.feedback.all}></Statistic>
+      <Statistic text="positive" value={((props.feedback.good/props.feedback.all) * 100).toString().concat('%')}></Statistic>
+        </tbody>
+      </table>
+    )
+  }
+  return (
+    <>
+     No feedback given
+    </>
+  )
+  
+}
+
+
+
+
 const App = () => {
   // save clicks of each button to own state
   const [good, setGood] = useState(0)
@@ -24,78 +68,17 @@ const App = () => {
     setScore(score-1)
   }
 
-  const handleclick= (prop)=>{
-    return () => prop()
-  }
-
-
-  const Button = (prop) =>{
-    return (
-    <button onClick={prop.funciton}>{prop.text}</button>
-    )
-  }
-
-  const Display = () => {
-    return (
-      <div>
-        good {good}<br/>
-        neutral {neutral}<br/>
-        bad {bad}
-      </div>
-    )
-  }
-  const All = () => {
-    return (
-      <div>
-        all {all}
-      </div>
-    )
-  }
-  const Average = () => {
-    if(all != 0){
-      return (
-        <div>
-          average {score / all}
-        </div>
-      )
-    }
-
-    return (
-      <div>
-        average 0
-      </div>
-    )
-    
-  }
-  const Positive = () => {
-    if(all != 0){
-      return (
-        <div>
-          positive {(good/all) * 100}%
-        </div>
-      )
-    }
-
-    return (
-      <div>
-        positive 0%
-      </div>
-    )
-    
-  }
   
 
+  
   return (
     <div>
-      <h1>give feedback</h1>
+     <h1>give feedback</h1>
      <Button text="good" funciton={goodClick}></Button>
      <Button text="neutral" funciton={neutralClick} ></Button>
      <Button text="bad" funciton={badClick}></Button>
      <h1>statistics</h1> 
-     <Display></Display>
-     <All></All>
-     <Average></Average>
-     <Positive></Positive>
+     <Statistics feedback={{good,neutral,bad,all,score}}></Statistics>
     </div>
   )
 }
