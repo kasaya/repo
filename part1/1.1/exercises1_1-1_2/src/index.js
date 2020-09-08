@@ -1,54 +1,56 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
 const App = () => {
-  const course = {
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7
-      },
-      {
-        name: 'State of a component',
-        exercises: 14
-      }
-    ]
+  // save clicks of each button to own state
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
+
+  const goodClick = () =>{
+     setGood(good + 1)
   }
+  const neutralClick = () =>{
+    setNeutral(neutral + 1)
+  }
+  const badClick = () =>{
+    setBad(bad + 1)
+  }
+
+  const handleclick= (prop)=>{
+    return () => prop()
+  }
+
+
+  const Button = (prop) =>{
+    return (
+    <button onClick={prop.funciton}>{prop.text}</button>
+    )
+  }
+
+  const Display = () => {
+    return (
+      <div>
+        good {good}<br/>
+        neutral {neutral}<br/>
+        bad {bad}
+      </div>
+    )
+  }
+  
+
   return (
     <div>
-      <Header course={course}></Header>
-      <Content course={course} ></Content>
-      <Total course={course}></Total>
+      <h1>give feedback</h1>
+     <Button text="good" funciton={goodClick}></Button>
+     <Button text="neutral" funciton={neutralClick} ></Button>
+     <Button text="bad" funciton={badClick}></Button>
+     <h1>statistics</h1> 
+     <Display></Display>
     </div>
-
   )
 }
 
-
-
-const Header = (props)=>(
-  <h1>{props.course.name}</h1>
+ReactDOM.render(<App />, 
+  document.getElementById('root')
 )
-const Content = (props)=>{
-  return (
-    <>
-    <Part part={props.course.parts[0].name}  exercises={props.course.parts[0].exercises}></Part>
-    <Part part={props.course.parts[1].name}  exercises={props.course.parts[1].exercises}></Part>
-    <Part part={props.course.parts[2].name}  exercises={props.course.parts[2].exercises}></Part>
-    </>
-  )
-}
-const Part = (part)=>(
-  <p>{part.part} {part.exercises}</p>
-)
-
-const Total = (props)=>(
-  <p>Number of exercises {props.course.parts[0].exercises+props.course.parts[1].exercises+props.course.parts[2].exercises}</p>
-)
-
-ReactDOM.render(<App />, document.getElementById('root'))
