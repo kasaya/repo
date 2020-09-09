@@ -1,88 +1,77 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const Button = (prop) =>{
-  return (
-  <button onClick={prop.funciton}>{prop.text}</button>
-  )
-}
-
-const Statistic =(prop)=>{
+const Button = (props) => {
   return(
     <>
-    <tr>
-      <td>{prop.text}</td> 
-      <td>{prop.value}</td>
-    </tr>
+      <button onClick={props.click}>{props.text}</button>
     </>
   )
 }
-
-const Statistics = (props) => {
-  if(props.feedback.all > 0){
-
-    return (
-      <table>
-        <tbody>
-      <Statistic text="good" value={props.feedback.good}></Statistic>
-      <Statistic text="neutral" value={props.feedback.neutral}></Statistic>
-      <Statistic text="bad" value={props.feedback.bad}></Statistic>
-      <Statistic text="all" value={props.feedback.all}></Statistic>
-      <Statistic text="average" value={props.feedback.score / props.feedback.all}></Statistic>
-      <Statistic text="positive" value={((props.feedback.good/props.feedback.all) * 100).toString().concat('%')}></Statistic>
-        </tbody>
-      </table>
-    )
-  }
-  return (
+const DisplayContent = (props) => {
+  return(
     <>
-     No feedback given
+      {props.anecdotes[props.index]} <br/>
+      has {props.point[props.index]} votes
     </>
   )
-  
 }
 
 
+const App = (props) => {
 
-
-const App = () => {
-  // save clicks of each button to own state
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
-  const [all, setAll] = useState(0)
-  const [score, setScore] = useState(0)
-
-  const goodClick = () =>{
-     setGood(good + 1)
-     setAll(all+1)
-     setScore(score+1)
-  }
-  const neutralClick = () =>{
-    setNeutral(neutral + 1)
-    setAll(all+1)
-  }
-  const badClick = () =>{
-    setBad(bad + 1)
-    setAll(all+1)
-    setScore(score-1)
+  const [selected, setSelected] = useState(0)
+  const[point, setPoint] = useState(props.points)
+  const clickfunction = () => {
+    let num = Math.floor(Math.random() * (anecdotes.length-1)+1)
+    setSelected(num)
   }
 
-  
+  const vote = () => {
+    const copy = {...point}
+    copy[selected] += 1
+    setPoint(copy)
+  }
 
-  
+  const most = ()=>{
+    let most = point[0]
+    let maxindex = 0
+    for(let index in point) {  
+      if(point[index] > most) {
+        maxindex = index
+        most = point[index]
+      }
+    }
+    return maxindex
+  }
+
   return (
     <div>
-     <h1>give feedback</h1>
-     <Button text="good" funciton={goodClick}></Button>
-     <Button text="neutral" funciton={neutralClick} ></Button>
-     <Button text="bad" funciton={badClick}></Button>
-     <h1>statistics</h1> 
-     <Statistics feedback={{good,neutral,bad,all,score}}></Statistics>
+      <h1>Anecdote of the day</h1>
+      <DisplayContent anecdotes={props.anecdotes} point={point} index={selected} ></DisplayContent>
+      <div>
+        <Button click={vote} text= "vote"></Button>
+        <Button click={clickfunction} text = "next anecdote"></Button>
+      </div>
+      <h1>Anecdote with most votes</h1>
+      <DisplayContent anecdotes={props.anecdotes} point={point} index={most()} ></DisplayContent>
     </div>
   )
 }
+const anecdotes = [
+  'If it hurts, do it more often',
+  'Adding manpower to a late software project makes it later!',
+  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+  'Premature optimization is the root of all evil.',
+  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
+]
+const points=[0]
+for(let index in anecdotes) {  
+  points.push(0)
+}
 
-ReactDOM.render(<App />, 
+ReactDOM.render(
+  <App anecdotes={anecdotes} points={points}/>,
   document.getElementById('root')
 )
